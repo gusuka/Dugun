@@ -17,20 +17,26 @@
     overflow: hidden;
     text-align: center;
     
-    /* ---- YENİ VE ÇALIŞAN GIF LİNKİ ---- */
-    background-image: url('https://media.tenor.com/41I-i6m_i-IAAAAC/party-lights.gif');
-    background-size: cover;
-    background-position: center;
+    /* ---- BASİT VE HAREKETLİ ARKA PLAN ---- */
+    background: linear-gradient(135deg, #1e3c72, #2a5298, #6a82fb, #fc5c7d);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite;
     /* ------------------------------------------- */
   }
 
-  /* Başlangıç butonu stili */
+  /* Arka plan animasyonu için keyframes */
+  @keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
   #startButton {
     padding: 15px 30px;
     font-size: 1.5em;
     cursor: pointer;
     border: 2px solid white;
-    background-color: rgba(0,0,0,0.3); /* Arka planla uyum için hafif transparanlık */
+    background-color: transparent;
     color: white;
     border-radius: 10px;
     transition: all 0.3s ease;
@@ -40,54 +46,44 @@
     color: #1e3c72;
   }
 
-  /* İçerik başlangıçta gizli olacak */
   #mainContent {
     display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0,0,0,0.4); /* Yazıların okunabilirliği için hafif koyu katman */
-    padding: 20px;
-    border-radius: 15px;
   }
 
   h1 {
     margin-bottom: 20px;
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.7); /* Yazıyı daha okunur yapmak için gölge */
   }
 
   #countdown {
     font-size: 2em;
     font-weight: bold;
     margin-bottom: 20px;
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.7); /* Yazıyı daha okunur yapmak için gölge */
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
   }
 
   .dancing-gif {
-    width: 150px; /* GIF boyutu */
+    width: 150px;
     margin-bottom: 30px;
   }
 </style>
 </head>
 <body>
-
-  <button id="startButton">🎉 Müzikli Geri Sayıma Başla! 🎉</button>
-
+  <button id="startButton">🎉 KONFETİ PATLAT! 🎉</button>
   <div id="mainContent">
     <h1>BARAN DAMAT OLUYOOOOOOOOR</h1>
     <div id="countdown"></div>
     <img src="https://media.tenor.com/gCLIg7REMr8AAAAi/sportsmanias-animated-emojis.gif" alt="Dans Eden Damat" class="dancing-gif">
   </div>
-  
   <div id="player" style="display: none;"></div>
-
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script>
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
     var player;
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
@@ -97,7 +93,6 @@
       });
     }
     function onPlayerReady(event) {}
-
     const startButton = document.getElementById('startButton');
     const mainContent = document.getElementById('mainContent');
     startButton.addEventListener('click', () => {
@@ -107,7 +102,6 @@
       startCountdown();
       startConfetti();
     });
-
     function startCountdown() {
       const weddingDate = new Date("2025-09-19T00:00:00");
       const countdownEl = document.getElementById("countdown");
@@ -124,15 +118,8 @@
       }
       const interval = setInterval(updateCountdown, 1000); updateCountdown();
     }
-    
-    function launchConfetti() {
-      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#FFD700', '#00BFFF', '#1E90FF', '#7CFC00'] });
-    }
-    function startConfetti() {
-      setInterval(() => {
-        confetti({ particleCount: 5 + Math.random() * 5, spread: 50, origin: { x: Math.random(), y: Math.random() * 0.6 }, colors: ['#FFD700', '#00BFFF', '#1E90FF', '#7CFC00'] });
-      }, 500);
-    }
+    function launchConfetti() { confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#FFD700', '#00BFFF', '#1E90FF', '#7CFC00'] }); }
+    function startConfetti() { setInterval(() => { confetti({ particleCount: 5 + Math.random() * 5, spread: 50, origin: { x: Math.random(), y: Math.random() * 0.6 }, colors: ['#FFD700', '#00BFFF', '#1E90FF', '#7CFC00'] }); }, 500); }
   </script>
 </body>
 </html>
