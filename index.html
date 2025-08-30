@@ -12,11 +12,16 @@
     align-items: center;
     flex-direction: column;
     height: 100vh;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
     font-family: 'Arial', sans-serif;
     color: #ffffff;
     overflow: hidden;
     text-align: center;
+    
+    /* ---- EĞLENCELİ ARKA PLAN (SEÇENEK 2) ---- */
+    background-image: url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2R4dGozd3Fpc2Y4cGFucWJtdnJ2ZWF0YWdybHFqNWNpc3Y2OHRnZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YmcGg2J5jc4kNdIVKk/giphy.gif');
+    background-size: cover;
+    background-position: center;
+    /* ------------------------------------------- */
   }
 
   /* Başlangıç butonu stili */
@@ -25,7 +30,7 @@
     font-size: 1.5em;
     cursor: pointer;
     border: 2px solid white;
-    background-color: transparent;
+    background-color: rgba(0,0,0,0.3); /* Arka planla uyum için hafif transparanlık */
     color: white;
     border-radius: 10px;
     transition: all 0.3s ease;
@@ -41,17 +46,21 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background-color: rgba(0,0,0,0.4); /* Yazıların okunabilirliği için hafif koyu katman */
+    padding: 20px;
+    border-radius: 15px;
   }
 
   h1 {
     margin-bottom: 20px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.7); /* Yazıyı daha okunur yapmak için gölge */
   }
 
   #countdown {
     font-size: 2em;
     font-weight: bold;
     margin-bottom: 20px;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.7); /* Yazıyı daha okunur yapmak için gölge */
   }
 
   .dancing-gif {
@@ -62,7 +71,7 @@
 </head>
 <body>
 
-  <button id="startButton">🎉 KONFETİ PATLAT! 🎉</button>
+  <button id="startButton">🎉 Müzikli Geri Sayıma Başla! 🎉</button>
 
   <div id="mainContent">
     <h1>BARAN DAMAT OLUYOOOOOOOOR</h1>
@@ -73,9 +82,7 @@
   <div id="player" style="display: none;"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  
   <script>
-    // YouTube API'sini yükle
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -84,90 +91,46 @@
     var player;
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
-        height: '0',
-        width: '0',
-        videoId: 'R5HmKIyizCA', // YouTube Video ID'si
-        playerVars: {
-          'playsinline': 1,
-          'loop': 1,
-          'playlist': 'R5HmKIyizCA' // Loop için video ID'sini tekrar yazın
-        },
-        events: {
-          'onReady': onPlayerReady
-        }
+        height: '0', width: '0', videoId: 'R5HmKIyizCA',
+        playerVars: { 'playsinline': 1, 'loop': 1, 'playlist': 'R5HmKIyizCA' },
+        events: { 'onReady': onPlayerReady }
       });
     }
+    function onPlayerReady(event) {}
 
-    function onPlayerReady(event) {
-      // Player hazır olduğunda bir şey yapmaya gerek yok, tıklamayı bekleyeceğiz.
-    }
-
-    // Buton ve ana içerik elementlerini seç
     const startButton = document.getElementById('startButton');
     const mainContent = document.getElementById('mainContent');
-
-    // Butona tıklandığında
     startButton.addEventListener('click', () => {
-      // Butonu gizle
       startButton.style.display = 'none';
-      // Ana içeriği göster
       mainContent.style.display = 'flex';
-      // Müziği başlat
       player.playVideo();
-      // Geri sayımı başlat
       startCountdown();
-      // Konfetiyi başlat
       startConfetti();
     });
 
-
-    // === Geri Sayım Fonksiyonu ===
     function startCountdown() {
       const weddingDate = new Date("2025-09-19T00:00:00");
       const countdownEl = document.getElementById("countdown");
-
       function updateCountdown() {
-        const now = new Date();
-        const diff = weddingDate - now;
-
+        const now = new Date(); const diff = weddingDate - now;
         if (diff <= 0) {
-          countdownEl.innerHTML = "🎉 Düğün Günü Geldi! 🎉";
-          clearInterval(interval);
-          launchConfetti();
-          return;
+          countdownEl.innerHTML = "🎉 Düğün Günü Geldi! 🎉"; clearInterval(interval); launchConfetti(); return;
         }
-
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((diff / (1000 * 60)) % 60);
         const seconds = Math.floor((diff / 1000) % 60);
-
-        countdownEl.innerHTML =
-          `${days} gün ${hours} saat ${minutes} dakika ${seconds} saniye`;
+        countdownEl.innerHTML = `${days} gün ${hours} saat ${minutes} dakika ${seconds} saniye`;
       }
-      const interval = setInterval(updateCountdown, 1000);
-      updateCountdown();
-    }
-
-    // === Konfeti Fonksiyonları ===
-    function launchConfetti() {
-      confetti({
-        particleCount: 150,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#FFD700', '#00BFFF', '#1E90FF', '#7CFC00']
-      });
+      const interval = setInterval(updateCountdown, 1000); updateCountdown();
     }
     
+    function launchConfetti() {
+      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#FFD700', '#00BFFF', '#1E90FF', '#7CFC00'] });
+    }
     function startConfetti() {
-      // Sayfa açıldığında sürekli küçük konfeti patlamaları
       setInterval(() => {
-        confetti({
-          particleCount: 5 + Math.random() * 5,
-          spread: 50,
-          origin: { x: Math.random(), y: Math.random() * 0.6 },
-          colors: ['#FFD700', '#00BFFF', '#1E90FF', '#7CFC00']
-        });
+        confetti({ particleCount: 5 + Math.random() * 5, spread: 50, origin: { x: Math.random(), y: Math.random() * 0.6 }, colors: ['#FFD700', '#00BFFF', '#1E90FF', '#7CFC00'] });
       }, 500);
     }
   </script>
