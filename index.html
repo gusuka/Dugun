@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Düğün Geri Sayımı</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    font-family: 'Arial', sans-serif;
+    color: #ffffff;
+    overflow: hidden;
+  }
+ 
+  h1 {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+ 
+  #countdown {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+  }
+ 
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+</style>
+</head>
+<body>
+  <h1>Arkadaşımın Düğününe Geri Sayım</h1>
+  <div id="countdown"></div>
+ 
+  <canvas id="confetti"></canvas>
+ 
+  <script>
+    // === Geri Sayım ===
+    const weddingDate = new Date("2025-09-19T00:00:00"); // Düzenle
+    function updateCountdown() {
+      const now = new Date();
+      const diff = weddingDate - now;
+ 
+      if(diff <= 0) {
+        document.getElementById("countdown").innerHTML = "🎉 Düğün Günü Geldi! 🎉";
+        clearInterval(interval);
+        startConfetti();
+        return;
+      }
+ 
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+ 
+      document.getElementById("countdown").innerHTML =
+        `${days} gün ${hours} saat ${minutes} dakika ${seconds} saniye`;
+    }
+    const interval = setInterval(updateCountdown, 1000);
+    updateCountdown();
+ 
+    // === Konfeti ===
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+    let confetti = [];
+ 
+    function randomColor() {
+      const colors = ['#FFD700','#FF6347','#00BFFF','#1E90FF','#7CFC00','#FF69B4'];
+      return colors[Math.floor(Math.random()*colors.length)];
+    }
+ 
+    function Confetto() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * -H;
+      this.r = Math.random() * 6 + 4;
+      this.d = Math.random() * 50 + 10;
+      this.color = randomColor();
+      this.tilt = Math.random() * 10 - 10;
+      this.tiltAngleIncrement = Math.random() * 0.07 + 0.05;
+      this.tiltAngle = 0;
+    }
+ 
+    function draw() {
+      ctx.clearRect(0,0,W,H);
+      for(let i=0;i<confetti.length;i++){
+        let c = confetti[i];
+        ctx.beginPath();
+        ctx.lineWidth = c.r / 2;
+        ctx.strokeStyle = c.color;
+        ctx.moveTo(c.x + c.tilt + c.r/4, c.y);
+        ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r/4);
+        ctx.stroke();
+      }
+      update();
+    }
+ 
+    function update() {
+      for(let i=0;i<confetti.length;i++){
+        let c = confetti[i];
+        c.tiltAngle += c.tiltAngleIncrement;
+        c.y += (Math.cos(c.d) + 3 + c.r/2)/2;
+        c.tilt = Math.sin(c.tiltAngle) * 15;
+        if(c.y > H){
+          confetti[i] = new Confetto();
+          confetti[i].y = -10;
+        }
+      }
+    }
+ 
+    function startConfetti() {
+      for(let i=0;i<150;i++){
+        confetti.push(new Confetto());
+      }
+      setInterval(draw,20);
+    }
+ 
+    window.addEventListener('resize', ()=>{
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
