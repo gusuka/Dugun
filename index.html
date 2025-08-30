@@ -26,26 +26,22 @@
   #countdown {
     font-size: 2em;
     font-weight: bold;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
   }
  
-  button {
-    padding: 10px 20px;
-    font-size: 1em;
-    border: none;
-    background-color: #ffcc00;
-    color: #1e3c72;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-top: 20px;
+  #dancingGroom {
+    width: 150px; /* GIF boyutu */
+    margin-bottom: 30px;
   }
- 
 </style>
 </head>
 <body>
-  <h1>BARAN DAMAT OLUYOR</h1>
+  <h1>BARAN DAMAT OLUYOOOOOOOOR</h1>
   <div id="countdown"></div>
+ 
+  <!-- Oynayan damat GIF -->
+  <img id="dancingGroom" src="dancing-groom.gif" alt="Oynayan Damat">
  
   <!-- Canvas Confetti kütüphanesi -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -78,7 +74,7 @@
     const interval = setInterval(updateCountdown, 1000);
     updateCountdown();
  
-    // === Konfeti Fonksiyonu ===
+    // === Konfeti ===
     function launchConfetti() {
       confetti({
         particleCount: 150,
@@ -88,7 +84,7 @@
       });
     }
  
-    // Sayfa açıldığında konfeti küçük patlamalarla çalışsın
+    // Sayfa açıldığında sürekli küçük konfeti patlamaları
     setInterval(() => {
       confetti({
         particleCount: 5 + Math.random()*5,
@@ -97,7 +93,6 @@
         colors: ['#FFD700','#00BFFF','#1E90FF','#7CFC00']
       });
     }, 500);
- 
   </script>
 </body>
 </html>
