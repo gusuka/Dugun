@@ -16,11 +16,11 @@
     font-family: 'Arial', sans-serif;
     color: #ffffff;
     overflow: hidden;
+    text-align: center;
   }
  
   h1 {
     margin-bottom: 20px;
-    text-align: center;
   }
  
   #countdown {
@@ -30,30 +30,39 @@
     text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
   }
  
-  canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
+  button {
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    background-color: #ffcc00;
+    color: #1e3c72;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 20px;
   }
+ 
 </style>
 </head>
 <body>
-  <h1>Arkadaşımın Düğününe Geri Sayım</h1>
+  <h1>BARAN DAMAT OLUYOR</h1>
   <div id="countdown"></div>
  
-  <canvas id="confetti"></canvas>
+  <!-- Canvas Confetti kütüphanesi -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
  
   <script>
     // === Geri Sayım ===
     const weddingDate = new Date("2025-09-19T00:00:00"); // Düzenle
+    const countdownEl = document.getElementById("countdown");
+ 
     function updateCountdown() {
       const now = new Date();
       const diff = weddingDate - now;
  
       if(diff <= 0) {
-        document.getElementById("countdown").innerHTML = "🎉 Düğün Günü Geldi! 🎉";
+        countdownEl.innerHTML = "🎉 Düğün Günü Geldi! 🎉";
         clearInterval(interval);
-        startConfetti();
+        launchConfetti();
         return;
       }
  
@@ -62,73 +71,33 @@
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
       const seconds = Math.floor((diff / 1000) % 60);
  
-      document.getElementById("countdown").innerHTML =
+      countdownEl.innerHTML =
         `${days} gün ${hours} saat ${minutes} dakika ${seconds} saniye`;
     }
+ 
     const interval = setInterval(updateCountdown, 1000);
     updateCountdown();
  
-    // === Konfeti ===
-    const canvas = document.getElementById('confetti');
-    const ctx = canvas.getContext('2d');
-    let W = canvas.width = window.innerWidth;
-    let H = canvas.height = window.innerHeight;
-    let confetti = [];
- 
-    function randomColor() {
-      const colors = ['#FFD700','#FF6347','#00BFFF','#1E90FF','#7CFC00','#FF69B4'];
-      return colors[Math.floor(Math.random()*colors.length)];
+    // === Konfeti Fonksiyonu ===
+    function launchConfetti() {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#FFD700','#00BFFF','#1E90FF','#7CFC00']
+      });
     }
  
-    function Confetto() {
-      this.x = Math.random() * W;
-      this.y = Math.random() * -H;
-      this.r = Math.random() * 6 + 4;
-      this.d = Math.random() * 50 + 10;
-      this.color = randomColor();
-      this.tilt = Math.random() * 10 - 10;
-      this.tiltAngleIncrement = Math.random() * 0.07 + 0.05;
-      this.tiltAngle = 0;
-    }
+    // Sayfa açıldığında konfeti küçük patlamalarla çalışsın
+    setInterval(() => {
+      confetti({
+        particleCount: 5 + Math.random()*5,
+        spread: 50,
+        origin: { x: Math.random(), y: Math.random() * 0.6 },
+        colors: ['#FFD700','#00BFFF','#1E90FF','#7CFC00']
+      });
+    }, 500);
  
-    function draw() {
-      ctx.clearRect(0,0,W,H);
-      for(let i=0;i<confetti.length;i++){
-        let c = confetti[i];
-        ctx.beginPath();
-        ctx.lineWidth = c.r / 2;
-        ctx.strokeStyle = c.color;
-        ctx.moveTo(c.x + c.tilt + c.r/4, c.y);
-        ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r/4);
-        ctx.stroke();
-      }
-      update();
-    }
- 
-    function update() {
-      for(let i=0;i<confetti.length;i++){
-        let c = confetti[i];
-        c.tiltAngle += c.tiltAngleIncrement;
-        c.y += (Math.cos(c.d) + 3 + c.r/2)/2;
-        c.tilt = Math.sin(c.tiltAngle) * 15;
-        if(c.y > H){
-          confetti[i] = new Confetto();
-          confetti[i].y = -10;
-        }
-      }
-    }
- 
-    function startConfetti() {
-      for(let i=0;i<150;i++){
-        confetti.push(new Confetto());
-      }
-      setInterval(draw,20);
-    }
- 
-    window.addEventListener('resize', ()=>{
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    });
   </script>
 </body>
 </html>
