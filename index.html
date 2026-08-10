@@ -1,125 +1,190 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>Düğün Geri Sayımı</title>
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 100vh;
-    font-family: 'Arial', sans-serif;
-    color: #ffffff;
-    overflow: hidden;
-    text-align: center;
-    
-    /* ---- BASİT VE HAREKETLİ ARKA PLAN ---- */
-    background: linear-gradient(135deg, #1e3c72, #2a5298, #6a82fb, #fc5c7d);
-    background-size: 400% 400%;
-    animation: gradientAnimation 15s ease infinite;
-    /* ------------------------------------------- */
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BURCU DAMAT OLUYOR 💕</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Confetti JS (Süre dolduğunda çalışır) -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-  /* Arka plan animasyonu için keyframes */
-  @keyframes gradientAnimation {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
+  <style>
+    :root {
+      --bg-color: #fdfbfb;
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --accent-color: #d4a373;
+      --text-main: #333333;
+      --text-muted: #666666;
+    }
 
-  #startButton {
-    padding: 15px 30px;
-    font-size: 1.5em;
-    cursor: pointer;
-    border: 2px solid white;
-    background-color: transparent;
-    color: white;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-  }
-  #startButton:hover {
-    background-color: white;
-    color: #1e3c72;
-  }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  #mainContent {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: var(--text-main);
+    }
 
-  h1 {
-    margin-bottom: 20px;
-  }
+    .container {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      padding: 40px 30px;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
 
-  #countdown {
-    font-size: 2em;
-    font-weight: bold;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-  }
+    .heart-icon {
+      font-size: 2.5rem;
+      color: #e63946;
+      margin-bottom: 10px;
+      animation: pulse 1.5s infinite;
+    }
 
-  .dancing-gif {
-    width: 150px;
-    margin-bottom: 30px;
-  }
-</style>
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      color: #2b2d42;
+    }
+
+    p.subtext {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 30px;
+    }
+
+    .countdown {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .time-box {
+      background: #ffffff;
+      padding: 16px 8px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .time-box .number {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--accent-color);
+      display: block;
+    }
+
+    .time-box .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .wedding-date {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #4a5568;
+      background: rgba(212, 163, 115, 0.15);
+      padding: 10px 18px;
+      border-radius: 20px;
+      display: inline-block;
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 1.8rem; }
+      .time-box .number { font-size: 1.4rem; }
+      .countdown { gap: 8px; }
+    }
+  </style>
 </head>
 <body>
-  <button id="startButton">🎉 KONFETİ PATLAT! 🎉</button>
-  <div id="mainContent">
-    <h1>BARAN DAMAT OLUYOOOOOOOOR</h1>
-    <div id="countdown"></div>
-    <img src="https://media.tenor.com/gCLIg7REMr8AAAAi/sportsmanias-animated-emojis.gif" alt="Dans Eden Damat" class="dancing-gif">
+
+  <div class="container">
+    <div class="heart-icon">💍</div>
+    <!-- 1. BURAYI DEĞİŞTİR: Çiftin İsimleri -->
+    <h1 id="couple-names">BURCU & YAHYA</h1>
+    <p class="subtext">HAAPILY EVER AFTER</p>
+
+    <div class="countdown" id="countdown">
+      <div class="time-box">
+        <span class="number" id="days">00</span>
+        <span class="label">Gün</span>
+      </div>
+      <div class="time-box">
+        <span class="number" id="hours">00</span>
+        <span class="label">Saat</span>
+      </div>
+      <div class="time-box">
+        <span class="number" id="minutes">00</span>
+        <span class="label">Dakika</span>
+      </div>
+      <div class="time-box">
+        <span class="number" id="seconds">00</span>
+        <span class="label">Saniye</span>
+      </div>
+    </div>
+
+    <!-- 2. BURAYI DEĞİŞTİR: Görünmesini istediğin tarih metni -->
+    <div class="wedding-date" id="date-display">🗓️ 15 Eylül 2026 - 19:00</div>
   </div>
-  <div id="player" style="display: none;"></div>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
   <script>
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    var player;
-    function onYouTubeIframeAPIReady() {
-      player = new YT.Player('player', {
-        height: '0', width: '0', videoId: 'R5HmKIyizCA',
-        playerVars: { 'playsinline': 1, 'loop': 1, 'playlist': 'R5HmKIyizCA' },
-        events: { 'onReady': onPlayerReady }
-      });
-    }
-    function onPlayerReady(event) {}
-    const startButton = document.getElementById('startButton');
-    const mainContent = document.getElementById('mainContent');
-    startButton.addEventListener('click', () => {
-      startButton.style.display = 'none';
-      mainContent.style.display = 'flex';
-      player.playVideo();
-      startCountdown();
-      startConfetti();
-    });
-    function startCountdown() {
-      const weddingDate = new Date("2025-09-20T00:00:00");
-      const countdownEl = document.getElementById("countdown");
-      function updateCountdown() {
-        const now = new Date(); const diff = weddingDate - now;
-        if (diff <= 0) {
-          countdownEl.innerHTML = "🎉 Düğün Günü Geldi! 🎉"; clearInterval(interval); launchConfetti(); return;
-        }
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-        const seconds = Math.floor((diff / 1000) % 60);
-        countdownEl.innerHTML = `${days} gün ${hours} saat ${minutes} dakika ${seconds} saniye`;
+    // 3. BURAYI DEĞİŞTİR: Düğün tarihi ve saati (YIL-AY-GÜN T SAAT:DAKİKA:SANİYE)
+    const targetDate = new Date("2026-09-15T19:00:00").getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference < 0) {
+        document.querySelector(".container").innerHTML = `
+          <div class="heart-icon">🎉</div>
+          <h1>Mutluluklar Dileriz!</h1>
+          <p class="subtext" style="margin-top:15px; font-size: 1.1rem;">Bugün o büyük gün! Bir ömür boyu mutluluklar...</p>
+        `;
+        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+        return;
       }
-      const interval = setInterval(updateCountdown, 1000); updateCountdown();
+
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      document.getElementById("days").innerText = days < 10 ? '0' + days : days;
+      document.getElementById("hours").innerText = hours < 10 ? '0' + hours : hours;
+      document.getElementById("minutes").innerText = minutes < 10 ? '0' + minutes : minutes;
+      document.getElementById("seconds").innerText = seconds < 10 ? '0' + seconds : seconds;
     }
-    function launchConfetti() { confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#FFD700', '#00BFFF', '#1E90FF', '#7CFC00'] }); }
-    function startConfetti() { setInterval(() => { confetti({ particleCount: 5 + Math.random() * 5, spread: 50, origin: { x: Math.random(), y: Math.random() * 0.6 }, colors: ['#FFD700', '#00BFFF', '#1E90FF', '#7CFC00'] }); }, 500); }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
   </script>
 </body>
 </html>
