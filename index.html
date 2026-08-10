@@ -15,10 +15,10 @@
 
   <style>
     :root {
-      --card-bg: rgba(255, 255, 255, 0.88);
+      --card-bg: rgba(255, 255, 255, 0.85);
       --accent-color: #d4a373;
       --bride-accent: #e07a5f;
-      --text-main: #333333;
+      --text-main: #2b2d42;
       --text-muted: #666666;
     }
 
@@ -28,9 +28,12 @@
       padding: 0;
     }
 
+    /* Romantik Canlı Arka Plan */
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      background: linear-gradient(-45deg, #ffdde1, #ee9ca7, #a1c4fd, #c2e9fb);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -38,6 +41,48 @@
       padding: 30px 20px;
       color: var(--text-main);
       position: relative;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Uçan Kalpler Arka Plan Efekti */
+    .bg-hearts {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .heart-particle {
+      position: absolute;
+      bottom: -10%;
+      color: rgba(255, 182, 193, 0.6);
+      font-size: 1.5rem;
+      user-select: none;
+      animation: floatUp 8s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg) scale(0.8);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-120vh) rotate(360deg) scale(1.2);
+        opacity: 0;
+      }
     }
 
     /* GİRİŞ PERDESİ (MODAL) */
@@ -47,13 +92,13 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.35);
       backdrop-filter: blur(12px);
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 2000;
-      transition: opacity 0.5s ease, visibility 0.5s ease;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
     }
 
     .overlay.hidden {
@@ -63,13 +108,14 @@
     }
 
     .start-card {
-      background: #ffffff;
+      background: rgba(255, 255, 255, 0.92);
       padding: 35px 25px;
-      border-radius: 24px;
+      border-radius: 28px;
       text-align: center;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
       max-width: 380px;
       width: 90%;
+      border: 1px solid rgba(255, 255, 255, 0.6);
       animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
@@ -126,7 +172,7 @@
       font-weight: 600;
       color: #333;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
       transition: all 0.3s ease;
       z-index: 1000;
       display: flex;
@@ -137,19 +183,22 @@
     .music-btn:hover {
       transform: translateY(-2px);
       background: #ffffff;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
     }
 
+    /* Ana Konteyner Kartı */
     .container {
+      position: relative;
+      z-index: 10;
       background: var(--card-bg);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(16px);
       padding: 40px 30px;
-      border-radius: 24px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      border-radius: 28px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
       text-align: center;
       max-width: 520px;
       width: 100%;
-      border: 1px solid rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.6);
     }
 
     .heart-icon {
@@ -180,7 +229,7 @@
     .section-divider {
       border: 0;
       height: 1px;
-      background: linear-gradient(to right, transparent, rgba(0,0,0,0.15), transparent);
+      background: linear-gradient(to right, transparent, rgba(0,0,0,0.12), transparent);
       margin: 30px 0;
     }
 
@@ -199,10 +248,10 @@
     }
 
     .time-box {
-      background: #ffffff;
+      background: rgba(255, 255, 255, 0.95);
       padding: 14px 6px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      border-radius: 18px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     }
 
     .time-box .number {
@@ -239,15 +288,6 @@
       color: #9d422b;
     }
 
-    /* Gizli Iframe */
-    #musicIframe {
-      position: absolute;
-      width: 0;
-      height: 0;
-      border: 0;
-      visibility: hidden;
-    }
-
     @media (max-width: 480px) {
       h1 { font-size: 1.8rem; }
       .time-box .number { font-size: 1.3rem; }
@@ -258,6 +298,9 @@
   </style>
 </head>
 <body>
+
+  <!-- Uçan Kalpler Arka Plan Katmanı -->
+  <div class="bg-hearts" id="bgHearts"></div>
 
   <!-- GİRİŞ SÜRPRİZ PENCERESİ -->
   <div class="overlay" id="startOverlay">
@@ -338,39 +381,51 @@
     </div>
   </div>
 
-  <!-- Doğrudan Müzik Iframe'i (En başından - 0. saniye) -->
-  <iframe 
-    id="musicIframe"
-    allow="autoplay"
-    src="">
-  </iframe>
+  <!-- REKLAMSIZ YEREL SES OYNATICI -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="sarki.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
-    const videoId = 'rtOvBOTyX00'; // Christina Perri - A Thousand Years
+    // --- UÇAN KALPLER OLUŞTURUCU ---
+    const heartsContainer = document.getElementById('bgHearts');
+    const heartSymbols = ['🌸', '💕', '✨', '💖', '🤍'];
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart-particle');
+      heart.innerText = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (Math.random() * 4 + 6) + 's';
+      heart.style.fontSize = (Math.random() * 1 + 1) + 'rem';
+      
+      heartsContainer.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 10000);
+    }
+
+    setInterval(createHeart, 600);
+
+    // --- MÜZİK KONTROL ---
+    const audio = document.getElementById('bgMusic');
     let isPlaying = false;
 
-    // Kullanıcı butona bastığında müzik iframe'i yüklenip doğrudan başlar
     function startExperience() {
       document.getElementById('startOverlay').classList.add('hidden');
-      const iframe = document.getElementById('musicIframe');
-      
-      // YouTube Embed Adresi (start=0 ile en baştan başlar)
-      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&start=0&loop=1&playlist=${videoId}&enablejsapi=1`;
-      isPlaying = true;
-      updateMusicButton();
+      audio.play().then(() => {
+        isPlaying = true;
+        updateMusicButton();
+      }).catch(err => console.log("Oynatma engeli:", err));
     }
 
     function toggleMusic() {
-      const iframe = document.getElementById('musicIframe');
-      if (!iframe) return;
-
       if (isPlaying) {
-        // Müziği Durdur (Iframe kaynağını temizle)
-        iframe.src = "";
+        audio.pause();
         isPlaying = false;
       } else {
-        // Müziği Yeniden Başlat
-        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&start=0&loop=1&playlist=${videoId}&enablejsapi=1`;
+        audio.play();
         isPlaying = true;
       }
       updateMusicButton();
@@ -388,7 +443,7 @@
       }
     }
 
-    // Geri Sayım Hesaplamaları
+    // --- GERİ SAYIM HESAPLAMALARI ---
     const brideDate = new Date("2026-08-24T18:30:00").getTime();
     const weddingDate = new Date("2026-09-18T15:00:00").getTime();
 
