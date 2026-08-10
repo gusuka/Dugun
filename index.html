@@ -288,6 +288,18 @@
       color: #9d422b;
     }
 
+    /* Görünmez ama aktif YouTube Iframe */
+    #musicIframe {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0.01;
+      pointer-events: none;
+      border: 0;
+      bottom: 0;
+      left: 0;
+    }
+
     @media (max-width: 480px) {
       h1 { font-size: 1.8rem; }
       .time-box .number { font-size: 1.3rem; }
@@ -306,9 +318,10 @@
   <div class="overlay" id="startOverlay">
     <div class="start-card">
       <div style="font-size: 3rem; margin-bottom: 10px;">💌</div>
-      <h2>Burcu Gelin Oluyor👰‍♀️</h2>
+      <h2>Burcumuz Gelin Oluyor</h2>
+      <p>Geri sayımı başlatmak ve müziği dinlemek için dokunun.</p>
       <button class="start-btn" onclick="startExperience()">
-        🎵 Detaylar için tıklayınız.
+        🎵 Müziği Başlat
       </button>
     </div>
   </div>
@@ -380,10 +393,12 @@
     </div>
   </div>
 
-  <!-- GARANTİLİ YÜKSEK KALİTELİ DÜĞÜN MÜZİĞİ SES KODU -->
-  <audio id="bgMusic" loop preload="auto">
-    <source src="https://www.youtube.com/watch?v=rtOvBOTyX00" type="audio/mpeg">
-  </audio>
+  <!-- YouTube Video Iframe -->
+  <iframe 
+    id="musicIframe"
+    allow="autoplay"
+    src="">
+  </iframe>
 
   <script>
     // --- YOĞUN UÇAN KALPLER OLUŞTURUCU ---
@@ -405,36 +420,31 @@
       }, 6000);
     }
 
-    // Kalp üretme hızı yüksek
     setInterval(createHeart, 60);
 
-    // --- KESİN ÇALIŞAN MÜZİK VE MODAL KONTROLÜ ---
-    const audio = document.getElementById('bgMusic');
+    // --- YOUTUBE MÜZİK VE MODAL KONTROLÜ ---
+    const videoId = 'rtOvBOTyX00'; // Christina Perri - A Thousand Years
     let isPlaying = false;
 
     function startExperience() {
       document.getElementById('startOverlay').classList.add('hidden');
+      const iframe = document.getElementById('musicIframe');
       
-      // Ses seviyesini ve oynatmayı başlat
-      audio.volume = 0.8;
-      const playPromise = audio.play();
-
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          isPlaying = true;
-          updateMusicButton();
-        }).catch(error => {
-          console.log("Ses oynatma hatası:", error);
-        });
-      }
+      // Butona dokunulduğu an YouTube Embed canlı başlatılır
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&start=0&loop=1&playlist=${videoId}&enablejsapi=1`;
+      isPlaying = true;
+      updateMusicButton();
     }
 
     function toggleMusic() {
+      const iframe = document.getElementById('musicIframe');
+      if (!iframe) return;
+
       if (isPlaying) {
-        audio.pause();
+        iframe.src = "";
         isPlaying = false;
       } else {
-        audio.play();
+        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&start=0&loop=1&playlist=${videoId}&enablejsapi=1`;
         isPlaying = true;
       }
       updateMusicButton();
