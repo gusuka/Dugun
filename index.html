@@ -85,6 +85,79 @@
       }
     }
 
+    /* GİRİŞ PERDESİ (MODAL) */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    .overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .start-card {
+      background: rgba(255, 255, 255, 0.92);
+      padding: 35px 25px;
+      border-radius: 28px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+      max-width: 380px;
+      width: 90%;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .start-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: #2b2d42;
+      margin-bottom: 10px;
+    }
+
+    .start-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 25px;
+    }
+
+    .start-btn {
+      background: linear-gradient(135deg, #e07a5f 0%, #d4a373 100%);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(224, 122, 95, 0.3);
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(224, 122, 95, 0.4);
+    }
+
     /* Müzik Kontrol Butonu */
     .music-btn {
       position: fixed;
@@ -229,6 +302,18 @@
   <!-- Uçan Kalpler Arka Plan Katmanı -->
   <div class="bg-hearts" id="bgHearts"></div>
 
+  <!-- GİRİŞ SÜRPRİZ PENCERESİ (MODAL) -->
+  <div class="overlay" id="startOverlay">
+    <div class="start-card">
+      <div style="font-size: 3rem; margin-bottom: 10px;">💌</div>
+      <h2>Özel Bir Davet</h2>
+      <p>Geri sayımı başlatmak ve müziği dinlemek için dokunun.</p>
+      <button class="start-btn" onclick="startExperience()">
+        🎵 Müziği Başlat
+      </button>
+    </div>
+  </div>
+
   <!-- Müzik Kontrol Butonu -->
   <button class="music-btn" id="musicToggle" onclick="toggleMusic()">
     <span id="musicIcon">🔊</span> <span id="musicText">Müziği Durdur</span>
@@ -297,7 +382,7 @@
   </div>
 
   <!-- REKLAMSIZ YEREL SES OYNATICI -->
-  <audio id="bgMusic" loop autoplay preload="auto">
+  <audio id="bgMusic" loop preload="auto">
     <source src="sarki.mp3" type="audio/mpeg">
   </audio>
 
@@ -324,29 +409,17 @@
     // Kalp oluşturma sıklığı artırıldı (150ms)
     setInterval(createHeart, 150);
 
-    // --- MÜZİK KONTROL ---
+    // --- MÜZİK VE MODAL KONTROLÜ ---
     const audio = document.getElementById('bgMusic');
     let isPlaying = false;
 
-    function playAudio() {
+    function startExperience() {
+      document.getElementById('startOverlay').classList.add('hidden');
       audio.play().then(() => {
         isPlaying = true;
         updateMusicButton();
-      }).catch(err => {
-        isPlaying = false;
-        updateMusicButton();
-      });
+      }).catch(err => console.log("Oynatma engeli:", err));
     }
-
-    // Sayfa açılır açılmaz çalmayı dene
-    window.addEventListener('DOMContentLoaded', playAudio);
-
-    // Tarayıcı engelini aşmak için ekrana ilk tıklamada veya dokunmada çal
-    document.addEventListener('click', function() {
-      if (!isPlaying) {
-        playAudio();
-      }
-    }, { once: true });
 
     function toggleMusic() {
       if (isPlaying) {
