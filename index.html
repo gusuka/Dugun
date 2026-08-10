@@ -37,6 +37,35 @@
       align-items: center;
       padding: 30px 20px;
       color: var(--text-main);
+      position: relative;
+    }
+
+    /* Müzik Kontrol Butonu */
+    .music-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 50px;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #333;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .music-btn:hover {
+      transform: translateY(-2px);
+      background: #ffffff;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     }
 
     .container {
@@ -138,23 +167,31 @@
       color: #9d422b;
     }
 
+    /* Gizli Müzik Oynatıcı */
+    #youtube-player-container {
+      position: absolute;
+      width: 0;
+      height: 0;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
     @media (max-width: 480px) {
       h1 { font-size: 1.8rem; }
       .time-box .number { font-size: 1.3rem; }
       .countdown { gap: 6px; }
       .container { padding: 30px 20px; }
+      .music-btn { top: 12px; right: 12px; padding: 8px 14px; font-size: 0.8rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Arka Plan YouTube Oynatıcı (Müzik) -->
-  <iframe 
-    id="music-player"
-    src="https://www.youtube.com/watch?v=rtOvBOTyX00" 
-    allow="autoplay" 
-    style="display:none;">
-  </iframe>
+  <!-- Müzik Açma/Kapama Butonu -->
+  <button class="music-btn" id="musicToggle" onclick="toggleMusic()">
+    <span id="musicIcon">🎵</span> <span id="musicText">Müziği Başlat</span>
+  </button>
 
   <div class="container">
     <div class="heart-icon">💍</div>
@@ -166,7 +203,7 @@
     <div class="bride-theme" id="bride-section">
       <h2 class="event-title">✨ Bride to Be Akşamına Davetlisiniz ✨</h2>
       <p class="subtext">Mekan bilgisi daha sonra iletilecektir.</p>
-      
+
       <div class="countdown" id="bride-countdown">
         <div class="time-box">
           <span class="number" id="b-days">00</span>
@@ -218,19 +255,84 @@
     </div>
   </div>
 
+  <!-- Gizli YouTube Iframe Alanı -->
+  <div id="youtube-player-container"></div>
+
+  <!-- YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
   <script>
     // -------------------------------------------------------------
-    // Tarayıcı Otomatik Oynatma Engeli İçin Tıklama Tetikleyicisi
+    // 1. MÜZİK AYARLARI
     // -------------------------------------------------------------
-    document.addEventListener('click', function() {
-      const iframe = document.getElementById('music-player');
-      if (iframe) {
-        iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    const videoId = 'rtOvBOTyX00';  // Christina Perri - A Thousand Years
+    const startSecond = 90;         // Şarkının başlangıç saniyesi (1:30 dk = 90 saniye)
+
+    // -------------------------------------------------------------
+    // 2. YOUTUBE PLAYER ENTEGRASYONU
+    // -------------------------------------------------------------
+    let player;
+    let isPlaying = false;
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('youtube-player-container', {
+        height: '0',
+        width: '0',
+        videoId: videoId,
+        playerVars: {
+          'autoplay': 1,
+          'start': startSecond,
+          'loop': 1,
+          'playlist': videoId,
+          'controls': 0
+        },
+        events: {
+          'onReady': onPlayerReady
+        }
+      });
+    }
+
+    function onPlayerReady(event) {
+      event.target.playVideo();
+      isPlaying = true;
+      updateMusicButton();
+    }
+
+    function toggleMusic() {
+      if (!player) return;
+      if (isPlaying) {
+        player.pauseVideo();
+        isPlaying = false;
+      } else {
+        player.playVideo();
+        isPlaying = true;
+      }
+      updateMusicButton();
+    }
+
+    function updateMusicButton() {
+      const icon = document.getElementById("musicIcon");
+      const text = document.getElementById("musicText");
+      if (isPlaying) {
+        icon.innerText = "🔊";
+        text.innerText = "Müziği Durdur";
+      } else {
+        icon.innerText = "🔇";
+        text.innerText = "Müziği Başlat";
+      }
+    }
+
+    // Tarayıcı otomatik oynatma kısıtlamalarını aşmak için ekrana ilk dokunuş
+    document.body.addEventListener('click', function() {
+      if (player && !isPlaying) {
+        player.playVideo();
+        isPlaying = true;
+        updateMusicButton();
       }
     }, { once: true });
 
     // -------------------------------------------------------------
-    // Tarih Tanımlamaları ve Geri Sayım
+    // 3. GERİ SAYIM HESAPLAMALARI
     // -------------------------------------------------------------
     const brideDate = new Date("2026-08-25T18:30:00").getTime();
     const weddingDate = new Date("2026-09-19T19:00:00").getTime();
