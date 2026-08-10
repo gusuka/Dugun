@@ -188,9 +188,9 @@
 </head>
 <body>
 
-  <!-- Müzik Açma/Kapama Butonu -->
+  <!-- Müzik Kontrol Butonu -->
   <button class="music-btn" id="musicToggle" onclick="toggleMusic()">
-    <span id="musicIcon">🎵</span> <span id="musicText">Müziği Başlat</span>
+    <span id="musicIcon">🔊</span> <span id="musicText">Müziği Durdur</span>
   </button>
 
   <div class="container">
@@ -255,7 +255,7 @@
     </div>
   </div>
 
-  <!-- Gizli YouTube Iframe Alanı -->
+  <!-- Gizli YouTube Oynatıcı Alanı -->
   <div id="youtube-player-container"></div>
 
   <!-- YouTube IFrame API -->
@@ -266,13 +266,13 @@
     // 1. MÜZİK AYARLARI
     // -------------------------------------------------------------
     const videoId = 'rtOvBOTyX00';  // Christina Perri - A Thousand Years
-    const startSecond = 90;         // Şarkının başlangıç saniyesi (1:30 dk = 90 saniye)
+    const startSecond = 90;         // 1:30 dk başlangıç saniyesi
 
     // -------------------------------------------------------------
-    // 2. YOUTUBE PLAYER ENTEGRASYONU
+    // 2. YOUTUBE PLAYER ENTEGRASYONU & OTOMATİK BAŞLATMA
     // -------------------------------------------------------------
     let player;
-    let isPlaying = false;
+    let isPlaying = true;
 
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('youtube-player-container', {
@@ -294,8 +294,6 @@
 
     function onPlayerReady(event) {
       event.target.playVideo();
-      isPlaying = true;
-      updateMusicButton();
     }
 
     function toggleMusic() {
@@ -322,9 +320,9 @@
       }
     }
 
-    // Tarayıcı otomatik oynatma kısıtlamalarını aşmak için ekrana ilk dokunuş
-    document.body.addEventListener('click', function() {
-      if (player && !isPlaying) {
+    // Tarayıcı otomatik çalmayı engellerse sayfaya ilk dokunuşta/tıklamada çalmayı garantiye al
+    document.addEventListener('click', function() {
+      if (player && player.getPlayerState() !== YT.PlayerState.PLAYING) {
         player.playVideo();
         isPlaying = true;
         updateMusicButton();
