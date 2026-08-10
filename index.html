@@ -9,11 +9,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
-  <iframe 
-  src="https://www.youtube.com/embed/VIDEO_ID?start=90&autoplay=1&loop=1" 
-  allow="autoplay" 
-  style="display:none;">
-</iframe>
   
   <!-- Confetti JS -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -153,6 +148,14 @@
 </head>
 <body>
 
+  <!-- Arka Plan YouTube Oynatıcı (Müzik) -->
+  <iframe 
+    id="music-player"
+    src="https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1&autoplay=1&start=90&loop=1&playlist=dQw4w9WgXcQ" 
+    allow="autoplay" 
+    style="display:none;">
+  </iframe>
+
   <div class="container">
     <div class="heart-icon">💍</div>
     <!-- Çiftin İsimleri -->
@@ -162,9 +165,7 @@
     <!-- 1. ETKİNLİK: Bride to Be -->
     <div class="bride-theme" id="bride-section">
       <h2 class="event-title">✨ Bride to Be Akşamına Davetlisiniz ✨</h2>
-          <p class="subtext">Mekan bilgisi daha sonra iletilecektir.</p>
-
-      <h3 class="event-title"></h>
+      <p class="subtext">Mekan bilgisi daha sonra iletilecektir.</p>
       
       <div class="countdown" id="bride-countdown">
         <div class="time-box">
@@ -218,9 +219,21 @@
   </div>
 
   <script>
-    // Tarih Tanımlamaları
+    // -------------------------------------------------------------
+    // Tarayıcı Otomatik Oynatma Engeli İçin Tıklama Tetikleyicisi
+    // -------------------------------------------------------------
+    document.addEventListener('click', function() {
+      const iframe = document.getElementById('music-player');
+      if (iframe) {
+        iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+      }
+    }, { once: true });
+
+    // -------------------------------------------------------------
+    // Tarih Tanımlamaları ve Geri Sayım
+    // -------------------------------------------------------------
     const brideDate = new Date("2026-08-25T18:30:00").getTime();
-    const weddingDate = new Date("2026-09-15T19:00:00").getTime();
+    const weddingDate = new Date("2026-09-19T19:00:00").getTime();
 
     function updateCountdowns() {
       const now = new Date().getTime();
@@ -263,7 +276,6 @@
 
     setInterval(updateCountdowns, 1000);
     updateCountdowns();
-    
   </script>
 </body>
 </html>
