@@ -239,14 +239,13 @@
       color: #9d422b;
     }
 
-    /* Gizli Müzik Oynatıcı */
-    #youtube-player-container {
+    /* Gizli Iframe */
+    #musicIframe {
       position: absolute;
       width: 0;
       height: 0;
-      overflow: hidden;
-      opacity: 0;
-      pointer-events: none;
+      border: 0;
+      visibility: hidden;
     }
 
     @media (max-width: 480px) {
@@ -335,55 +334,43 @@
         </div>
       </div>
 
-      <div class="event-date">🗓️ 18 Eylül 2026 - 15:00</div>
+      <div class="event-date">🗓️ 18 Eylül 2026 - 19:00</div>
     </div>
   </div>
 
-  <!-- Gizli YouTube Oynatıcı Alanı -->
-  <div id="youtube-player-container"></div>
-
-  <!-- YouTube IFrame API -->
-  <script src="https://www.youtube.com/iframe_api"></script>
+  <!-- Doğrudan Müzik Iframe'i (En başından - 0. saniye) -->
+  <iframe 
+    id="musicIframe"
+    allow="autoplay"
+    src="">
+  </iframe>
 
   <script>
-    const videoId = 'rtOvBOTyX00';  // Christina Perri - A Thousand Years
-    const startSecond = 90;         // 1:30 dk başlangıç saniyesi
-
-    let player;
+    const videoId = 'rtOvBOTyX00'; // Christina Perri - A Thousand Years
     let isPlaying = false;
 
-    function onYouTubeIframeAPIReady() {
-      player = new YT.Player('youtube-player-container', {
-        height: '0',
-        width: '0',
-        videoId: videoId,
-        playerVars: {
-          'autoplay': 0,
-          'start': startSecond,
-          'loop': 1,
-          'playlist': videoId,
-          'controls': 0
-        }
-      });
-    }
-
-    // Kullanıcı butona tıkladığında perde kapanır ve müzik başlar
+    // Kullanıcı butona bastığında müzik iframe'i yüklenip doğrudan başlar
     function startExperience() {
       document.getElementById('startOverlay').classList.add('hidden');
-      if (player) {
-        player.playVideo();
-        isPlaying = true;
-        updateMusicButton();
-      }
+      const iframe = document.getElementById('musicIframe');
+      
+      // YouTube Embed Adresi (start=0 ile en baştan başlar)
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&start=0&loop=1&playlist=${videoId}&enablejsapi=1`;
+      isPlaying = true;
+      updateMusicButton();
     }
 
     function toggleMusic() {
-      if (!player) return;
+      const iframe = document.getElementById('musicIframe');
+      if (!iframe) return;
+
       if (isPlaying) {
-        player.pauseVideo();
+        // Müziği Durdur (Iframe kaynağını temizle)
+        iframe.src = "";
         isPlaying = false;
       } else {
-        player.playVideo();
+        // Müziği Yeniden Başlat
+        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&start=0&loop=1&playlist=${videoId}&enablejsapi=1`;
         isPlaying = true;
       }
       updateMusicButton();
@@ -403,7 +390,7 @@
 
     // Geri Sayım Hesaplamaları
     const brideDate = new Date("2026-08-24T18:30:00").getTime();
-    const weddingDate = new Date("2026-09-18T15:00:00").getTime();
+    const weddingDate = new Date("2026-09-18T19:00:00").getTime();
 
     function updateCountdowns() {
       const now = new Date().getTime();
