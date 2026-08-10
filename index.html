@@ -40,6 +40,78 @@
       position: relative;
     }
 
+    /* GİRİŞ PERDESİ (MODAL) */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .start-card {
+      background: #ffffff;
+      padding: 35px 25px;
+      border-radius: 24px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+      max-width: 380px;
+      width: 90%;
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .start-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: #2b2d42;
+      margin-bottom: 10px;
+    }
+
+    .start-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 25px;
+    }
+
+    .start-btn {
+      background: linear-gradient(135deg, #e07a5f 0%, #d4a373 100%);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(224, 122, 95, 0.3);
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(224, 122, 95, 0.4);
+    }
+
     /* Müzik Kontrol Butonu */
     .music-btn {
       position: fixed;
@@ -188,6 +260,18 @@
 </head>
 <body>
 
+  <!-- GİRİŞ SÜRPRİZ PENCERESİ -->
+  <div class="overlay" id="startOverlay">
+    <div class="start-card">
+      <div style="font-size: 3rem; margin-bottom: 10px;">💌</div>
+      <h2>Özel Bir Davet</h2>
+      <p>Geri sayımı başlatmak ve müziği dinlemek için dokunun.</p>
+      <button class="start-btn" onclick="startExperience()">
+        🎵 Müziği Başlat & Giriş Yap
+      </button>
+    </div>
+  </div>
+
   <!-- Müzik Kontrol Butonu -->
   <button class="music-btn" id="musicToggle" onclick="toggleMusic()">
     <span id="musicIcon">🔊</span> <span id="musicText">Müziği Durdur</span>
@@ -262,17 +346,11 @@
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
-    // -------------------------------------------------------------
-    // 1. MÜZİK AYARLARI
-    // -------------------------------------------------------------
     const videoId = 'rtOvBOTyX00';  // Christina Perri - A Thousand Years
     const startSecond = 90;         // 1:30 dk başlangıç saniyesi
 
-    // -------------------------------------------------------------
-    // 2. YOUTUBE PLAYER ENTEGRASYONU & OTOMATİK BAŞLATMA
-    // -------------------------------------------------------------
     let player;
-    let isPlaying = true;
+    let isPlaying = false;
 
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('youtube-player-container', {
@@ -280,20 +358,23 @@
         width: '0',
         videoId: videoId,
         playerVars: {
-          'autoplay': 1,
+          'autoplay': 0,
           'start': startSecond,
           'loop': 1,
           'playlist': videoId,
           'controls': 0
-        },
-        events: {
-          'onReady': onPlayerReady
         }
       });
     }
 
-    function onPlayerReady(event) {
-      event.target.playVideo();
+    // Kullanıcı butona tıkladığında perde kapanır ve müzik başlar
+    function startExperience() {
+      document.getElementById('startOverlay').classList.add('hidden');
+      if (player) {
+        player.playVideo();
+        isPlaying = true;
+        updateMusicButton();
+      }
     }
 
     function toggleMusic() {
@@ -320,18 +401,7 @@
       }
     }
 
-    // Tarayıcı otomatik çalmayı engellerse sayfaya ilk dokunuşta/tıklamada çalmayı garantiye al
-    document.addEventListener('click', function() {
-      if (player && player.getPlayerState() !== YT.PlayerState.PLAYING) {
-        player.playVideo();
-        isPlaying = true;
-        updateMusicButton();
-      }
-    }, { once: true });
-
-    // -------------------------------------------------------------
-    // 3. GERİ SAYIM HESAPLAMALARI
-    // -------------------------------------------------------------
+    // Geri Sayım Hesaplamaları
     const brideDate = new Date("2026-08-25T18:30:00").getTime();
     const weddingDate = new Date("2026-09-19T19:00:00").getTime();
 
